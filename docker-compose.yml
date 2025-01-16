@@ -5,7 +5,7 @@ services:
     image: nginx:latest
     platform: linux/amd64
     restart: unless-stopped
-    container_name: nginx
+    container_name: nginx1
     ports:
       - 80:80
       - 8080:8080
@@ -36,7 +36,7 @@ services:
     image: mysql:8.0
     platform: linux/amd64
     restart: unless-stopped
-    container_name: mysql
+    container_name: mysql1
     ports:
       - 3306:3306
     environment:
@@ -58,7 +58,7 @@ services:
       context: ./frizar_backend
       dockerfile: ../Dockerfile.backend
     restart: unless-stopped
-    container_name: php-fpm
+    container_name: php-fpm1
     volumes:
       - ./config/php/php.ini:/usr/local/etc/php/php.ini:ro
       - ./frizar_backend:/var/www/html
