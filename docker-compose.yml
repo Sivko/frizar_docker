@@ -52,15 +52,17 @@ services:
       - app_network
 
   php-fpm:
-    image: php:8.2-fpm
+    image: phpdockerio/php:8.2-fpm
     platform: linux/amd64
     build:
       context: ./frizar_backend
       dockerfile: ../Dockerfile.backend
     restart: unless-stopped
-    container_name: php-fpm1
+    container_name: php-fpm
     volumes:
-      - ./config/php/php.ini:/usr/local/etc/php/php.ini:ro
+      # - ./config/php/php.ini:/usr/local/etc/php/php.ini:ro
+      - ./config/php/php.ini:/etc/php/8.2/fpm/conf.d/99-overrides.ini
+
       - ./frizar_backend:/var/www/html
     networks:
       - app_network
