@@ -1,0 +1,64 @@
+version: '3.8'
+
+services:
+  nginx:
+    image: nginx:latest
+    platform: linux/amd64
+    restart: unless-stopped
+    container_name: nginx
+    ports:
+      - 80:80
+      - 8080:8080
+      - 443:443
+    volumes:
+      - ./config/nginx/:/etc/nginx
+      - ./frizar_backend:/var/www/html:ro              # Код вашего приложения
+      - ./config/nginx/fastcgi_params:/etc/nginx/fastcgi_params:ro
+    depends_on:
+      - frontend
+      - php-fpm
+    networks:
+      - app_network
+
+  frontend:
+    container_name: frontend
+    build:
+      context: .
+      dockerfile: ./Dockerfile.front
+    platform: linux/amd64
+    restart: unless-stopped
+    ports:
+      - 3000:3000
+    networks:
+      - app_network
+
+  mysql:
+    image: mysql:8.0
+    platform: linux/amd64
+    restart: unless-stopped
+    container_name: mysql
+    ports:
+      - 3306:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: frizar
+      MYSQL_USER: frizar
+      MYSQL_PASSWORD: frizar
+    volumes:
+      - ./db_data:/var/lib/mysql
+      - ./init:/docker-entrypoint-initdb.d/  # Папка для скриптов инициализации
+      - ./config/mysql:/etc/mysql/conf.d/
+
+  php-fpm:
+    image: php:8.2-fpm # Укажите нужную версию PHP
+    platform: linux/amd64
+    container_name: php-fpm
+    volumes:
+      - ./config/php/php.ini:/usr/local/etc/php/php.ini:ro
+      - ./frizar_backend:/var/www/html # Код вашего приложения
+    networks:
+      - app_network
+
+networks:
+  app_network:
+    driver: bridge

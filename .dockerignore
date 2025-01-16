@@ -1,0 +1,11 @@
+./frizar_front/Dockerfile
+./frizar_front/.dockerignore
+./frizar_front/node_modules
+./frizar_front/npm-debug.log
+./frizar_front/README.md
+./frizar_front/.next
+./frizar_front/.git
+
+./config
+Dockerfile*
+.dockerignore
