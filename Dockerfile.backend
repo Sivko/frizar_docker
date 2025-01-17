@@ -3,21 +3,24 @@ FROM php:8.3-fpm
 RUN apt-get update
 RUN apt-get install -y curl
 RUN apt-get install -y wget
-RUN apt-get install -y git
 RUN apt-get install -y libfreetype6-dev
 RUN apt-get install -y libjpeg62-turbo-dev
 RUN apt-get install -y libxslt-dev
+RUN apt-get update && \
+    apt-get install -y \
+        zlib1g-dev
 # RUN docker-php-ext-configure mbstring mysqli 
-RUN docker-php-ext-install -j$(nproc) gd mysqli
+# RUN docker-php-ext-install -j$(nproc) gd mysqli
+# docker-php-ext-install -j$(nproc) gd mysqli \
+# RUN docker-php-ext-install mbstring
+RUN docker-php-ext-install mysqli
+RUN docker-php-ext-install gd
+RUN apt-get clean
 # RUN docker-php-ext-configure intl
 # RUN docker-php-ext-install intl
 # RUN docker-php-ext-install xsl
 # RUN docker-php-ext-install soap
 
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
-
 # ADD ./config/php/php.ini /usr/local/etc/php/conf.d/40-custom.ini
-
-WORKDIR /var/www/magento2
 
 CMD ["php-fpm"]
