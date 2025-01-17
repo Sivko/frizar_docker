@@ -3,7 +3,7 @@ version: '3.8'
 services:
   nginx:
     image: nginx:latest
-    platform: linux/amd64
+    # platform: linux/amd64
     restart: unless-stopped
     container_name: nginx1
     ports:
@@ -25,7 +25,7 @@ services:
   #   build:
   #     context: .
   #     dockerfile: ./Dockerfile.front
-  #   platform: linux/amd64
+    platform: linux/amd64
   #   restart: unless-stopped
   #   ports:
   #     - 3000:3000
@@ -34,7 +34,7 @@ services:
 
   mysql:
     image: mysql:8.0
-    platform: linux/amd64
+    # platform: linux/amd64
     restart: unless-stopped
     container_name: mysql1
     ports:
@@ -52,7 +52,7 @@ services:
       - app_network
 
   php-fpm:
-    image: phpdockerio/php:8.2-fpm
+    image: php:8.3-fpm
     platform: linux/amd64
     build:
       context: ./frizar_backend
@@ -60,12 +60,11 @@ services:
     restart: unless-stopped
     container_name: php-fpm
     volumes:
-      # - ./config/php/php.ini:/usr/local/etc/php/php.ini:ro
-      - ./config/php/php.ini:/etc/php/8.2/fpm/conf.d/99-overrides.ini
-
       - ./frizar_backend:/var/www/html
     networks:
       - app_network
+    ports:
+      - 9000:9000
 
 networks:
   app_network:

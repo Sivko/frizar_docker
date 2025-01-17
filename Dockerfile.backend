@@ -1,20 +1,23 @@
-FROM phpdockerio/php:8.2-fpm
+FROM php:8.3-fpm
 
-RUN apt-get update \
-    && apt-get -y --no-install-recommends install  \
-    libc-client-dev libkrb5-dev libssl-dev \
-    php8.2-gd \
-    php8.2-imagick \
-    php8.2-intl \
-    php8.2-interbase \
-    php8.2-mbstring \
-    php8.2-mcrypt \
-    php8.2-memcache \
-    php8.2-memcached \
-    php8.2-mysql \
-    php8.2-opcache \
-    php8.2-soap \
-    php8.2-zip \
-    php8.2-imap \
-    php8.2-curl \
-    && apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /usr/share/doc/*
+RUN apt-get update
+RUN apt-get install -y curl
+RUN apt-get install -y wget
+RUN apt-get install -y git
+RUN apt-get install -y libfreetype6-dev
+RUN apt-get install -y libjpeg62-turbo-dev
+RUN apt-get install -y libxslt-dev
+# RUN docker-php-ext-configure mbstring mysqli 
+RUN docker-php-ext-install -j$(nproc) gd mysqli
+# RUN docker-php-ext-configure intl
+# RUN docker-php-ext-install intl
+# RUN docker-php-ext-install xsl
+# RUN docker-php-ext-install soap
+
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+
+# ADD ./config/php/php.ini /usr/local/etc/php/conf.d/40-custom.ini
+
+WORKDIR /var/www/magento2
+
+CMD ["php-fpm"]
