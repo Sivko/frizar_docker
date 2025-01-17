@@ -12,7 +12,7 @@ services:
       - 443:443
     volumes:
       - ./config/nginx/:/etc/nginx
-      - ./frizar_backend:/var/www/html:ro
+      - ./frizar_backend:/var/www/html
       - ./config/nginx/fastcgi_params:/etc/nginx/fastcgi_params:ro
     depends_on:
       # - frontend
