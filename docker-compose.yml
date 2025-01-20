@@ -20,36 +20,6 @@ services:
     networks:
       - app_network
 
-  # frontend:
-  #   container_name: frontend
-  #   build:
-  #     context: .
-  #     dockerfile: ./Dockerfile.front
-    platform: linux/amd64
-  #   restart: unless-stopped
-  #   ports:
-  #     - 3000:3000
-  #   networks:
-  #     - app_network
-
-  # mysql:
-  #   image: mysql:8.0
-  #   # platform: linux/amd64
-  #   restart: unless-stopped
-  #   container_name: mysql1
-  #   ports:
-  #     - 3306:3306
-  #   environment:
-  #     MYSQL_ROOT_PASSWORD: root
-  #     MYSQL_DATABASE: frizar
-  #     MYSQL_USER: admin
-  #     MYSQL_PASSWORD: admin
-  #   volumes:
-  #     - ./db_data:/var/lib/mysql
-  #     - ./init:/docker-entrypoint-initdb.d/
-  #     - ./config/mysql:/etc/mysql/conf.d/
-  #   networks:
-  #     - app_network
   mariadb:
     image: mariadb:latest
     # platform: linux/amd64
@@ -71,7 +41,7 @@ services:
 
   php-fpm:
     image: php:8.3-fpm
-    platform: linux/amd64
+    # platform: linux/amd64
     build:
       context: ./frizar_backend
       dockerfile: ../Dockerfile.backend
@@ -83,21 +53,10 @@ services:
       - app_network
     ports:
       - 9000:9000
-  # meilisearch:
-  #   image: getmeili/meilisearch:latest
-  #   platform: linux/amd64
-  #   restart: unless-stopped
-  #   container_name: meilisearch
-  #   ports:
-  #     - 7700:7700
-  #   environment:
-  #     MEILI_MASTER_KEY: masterKey
-  #   volumes:
-  #     - ./meili_data:/data.ms
 
   meilisearch:
     image: getmeili/meilisearch:latest # Используйте последнюю версию MeiliSearch
-    platform: linux/amd64
+    # platform: linux/amd64
     environment:
       # MEILI_NO_MAINTENANCE: "true" # Отключить режим обслуживания (если необходимо)
       MEILI_MASTER_KEY: aSampleMasterKey
