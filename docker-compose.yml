@@ -83,6 +83,30 @@ services:
       - app_network
     ports:
       - 9000:9000
+  # meilisearch:
+  #   image: getmeili/meilisearch:latest
+  #   platform: linux/amd64
+  #   restart: unless-stopped
+  #   container_name: meilisearch
+  #   ports:
+  #     - 7700:7700
+  #   environment:
+  #     MEILI_MASTER_KEY: masterKey
+  #   volumes:
+  #     - ./meili_data:/data.ms
+
+  meilisearch:
+    image: getmeili/meilisearch:latest # Используйте последнюю версию MeiliSearch
+    platform: linux/amd64
+    environment:
+      # MEILI_NO_MAINTENANCE: "true" # Отключить режим обслуживания (если необходимо)
+      MEILI_MASTER_KEY: aSampleMasterKey
+    volumes:
+      - ./meili_data/:/data.ms # Хранение данных MeiliSearch
+    ports:
+      - 7700:7700 # Порт для доступа к MeiliSearch
+    networks:
+      - app_network
 
 networks:
   app_network:
