@@ -55,38 +55,38 @@ services:
       - 9000:9000
 
 
-  # meilisearch:
-  #   image: getmeili/meilisearch:v1.13
-  #   container_name: meilisearch
-  #   restart: unless-stopped
-  #   environment:
-  #     MEILI_MASTER_KEY: aSampleMasterKey  # Optional but recommended for production
-  #   volumes:
-  #     - ./meili_data:/meili_data
-  #   ports:
-  #     - 7700:7700
-  #   networks:
-  #     - app_network
-
-  elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch-wolfi:8.17.3
-    container_name: elasticsearch
+  meilisearch:
+    image: getmeili/meilisearch:v1.13
+    container_name: meilisearch
+    restart: unless-stopped
     environment:
-      - discovery.type=single-node
-      - bootstrap.memory_lock=true
-      - ES_JAVA_OPTS=-Xms512m -Xmx512m
-      - xpack.security.enabled=false
-    ulimits:
-      memlock:
-        soft: -1
-        hard: -1
+      MEILI_MASTER_KEY: aSampleMasterKey  # Optional but recommended for production
     volumes:
-      - ./elasticsearch_data:/usr/share/elasticsearch/data
+      - ./meili_data:/meili_data
     ports:
-      - "9200:9200"
-      - "9300:9300"
+      - 7700:7700
     networks:
       - app_network
+
+  # elasticsearch:
+  #   image: docker.elastic.co/elasticsearch/elasticsearch-wolfi:8.17.3
+  #   container_name: elasticsearch
+  #   environment:
+  #     - discovery.type=single-node
+  #     - bootstrap.memory_lock=true
+  #     - ES_JAVA_OPTS=-Xms512m -Xmx512m
+  #     - xpack.security.enabled=false
+  #   ulimits:
+  #     memlock:
+  #       soft: -1
+  #       hard: -1
+  #   volumes:
+  #     - ./elasticsearch_data:/usr/share/elasticsearch/data
+  #   ports:
+  #     - "9200:9200"
+  #     - "9300:9300"
+  #   networks:
+  #     - app_network
 
 networks:
   app_network:
