@@ -1,20 +1,4 @@
-version: '3.8'
-
 services:
-  php-fpm:
-    image: php:8.3-fpm
-    build:
-      dockerfile: ./Dockerfile.backend
-    restart: unless-stopped
-    container_name: php-fpm
-    volumes:
-      # - ./backend:/var/www/html
-      - /var/www/html/backend:/var/www/html/backend
-      - ./php.ini:/usr/local/etc/php/php.ini
-    ports:
-      - 9000:9000
-    networks:
-      - app_network
 
   meilisearch:
     image: getmeili/meilisearch:v1.13
