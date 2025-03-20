@@ -1,8 +1,8 @@
-scp fastcgi_params mime.types nginx.conf root@217.114.13.241:/etc/nginx/
-scp -r ./hosts/* root@217.114.13.241:/etc/nginx/sites-available/
-scp -r ./hosts/* root@217.114.13.241:/etc/nginx/sites-enabled/
+scp fastcgi_params mime.types nginx.conf root@217.114.9.212:/etc/nginx/
+scp -r ./hosts/* root@217.114.9.212:/etc/nginx/sites-available/
+scp -r ./hosts/* root@217.114.9.212:/etc/nginx/sites-enabled/
 
-REMOTE_HOST="root@217.114.13.241"
+REMOTE_HOST="root@217.114.9.212"
 
 # Проверяем конфигурацию Nginx на удалённом сервере
 if ssh $REMOTE_HOST 'nginx -t'; then

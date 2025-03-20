@@ -2,78 +2,40 @@ server {
     listen 80;
     server_name _;
     
-    # index index.php;
-
-    # root /var/www/html/backend/api/v2/public;
-
-    # location / {
-    #     try_files $uri /index.php$is_args$args;
-    # }
-
-    # location ~ \.php {
-    #     try_files $uri =404;
-    #     fastcgi_split_path_info ^(.+\.php)(/.+)$;
-    #     include fastcgi_params;
-    #     fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
-    #     fastcgi_param SCRIPT_NAME $fastcgi_script_name;
-    #     fastcgi_index index.php;
-    #     fastcgi_pass unix:/var/run/php/php8.3-fpm.sock;
-    # }
-
-    root /var/www/html/backend;
-    index index.php;
-
-
-
-    # Slim Framework (API)
-    location ^~ /api/v2/ {
-        root /var/www/html/backend;
+    # API обработка
+    location ~ ^/api/(.*)$ {
+        alias /var/www/html/backend/api/v2/public/;
+        try_files $1 $1/ @php;
         index index.php;
-        try_files $uri /api/v2/public/index.php$is_args$args;
-        
-        location ~ \.php$ {
+    }
+
+    location @php {
+        fastcgi_split_path_info ^(/api)(/.*)$;
+        fastcgi_pass unix:/run/php/php8.3-fpm.sock;
+        fastcgi_index index.php;
+        include fastcgi_params;
+        fastcgi_param SCRIPT_FILENAME /var/www/html/backend/api/v2/public/index.php;
+        fastcgi_param REQUEST_URI $fastcgi_path_info;
+        fastcgi_read_timeout 900;
+        fastcgi_param DOCUMENT_ROOT /var/www/html/backend;
+    }
+
+    # Основная конфигурация для Bitrix
+    location / {
+        root /var/www/html/backend;
+        try_files $uri $uri/ /bitrix/urlrewrite.php$is_args$args;
+
+        location ~ .php$ {
             include fastcgi_params;
-            fastcgi_pass unix:/var/run/php/php8.3-fpm.sock;
-            fastcgi_index index.php;
+            fastcgi_pass unix:/run/php/php8.3-fpm.sock;
             fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
-            fastcgi_intercept_errors on;
+            fastcgi_param PATH_INFO $fastcgi_path_info;
+            fastcgi_param PATH_TRANSLATED $document_root$fastcgi_path_info;
+            fastcgi_param DOCUMENT_ROOT /var/www/html/backend;
+
         }
     }
 
-
-    # Статические файлы обслуживаются напрямую
-    location ~* \.(jpg|jpeg|png|gif|ico|css|js|svg|woff|woff2|ttf|eot|otf|webp|mp4|mp3|avi|mov)$ {
-        expires max;
-        log_not_found off;
-    }
-
-    # Обработчик PHP
-    location ~ \.php$ {
-        #include fastcgi_params;
-        #fastcgi_pass unix:/var/run/php/php8.3-fpm.sock;
-        #fastcgi_index index.php;
-        #fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
-        #fastcgi_intercept_errors on;
-        #fastcgi_buffers 16 16k;      # Устанавливает 16 буферов по 16 KB каждый
-        #fastcgi_buffer_size 32k;     # Устанавливает размер первого буфера ответа
-        #fastcgi_busy_buffers_size 64k; # Размер дополнительных буферов при обработке больших запросов
-        fastcgi_pass unix:var/run/php/php8.3-fpm.sock;
-        fastcgi_index index.php;
-        include fastcgi_params;
-        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
-        fastcgi_param HTTP_PROXY "";
-        fastcgi_buffers 16 16k;
-        fastcgi_buffer_size 32k;
-        fastcgi_read_timeout 600;
-
-    }
-
-
-    # Битрикс
-    location / {
-        try_files $uri $uri/ /bitrix/urlrewrite.php$is_args$args;
-    }
-    
     # Логи
     error_log /var/log/nginx/error.log warn;
     access_log /var/log/nginx/access.log;
