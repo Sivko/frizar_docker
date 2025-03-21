@@ -10,12 +10,10 @@ server {
     }
 
     location @php {
-        fastcgi_split_path_info ^(/api)(/.*)$;
         fastcgi_pass unix:/run/php/php8.3-fpm.sock;
         fastcgi_index index.php;
         include fastcgi_params;
         fastcgi_param SCRIPT_FILENAME /var/www/html/backend/api/v2/public/index.php;
-        fastcgi_param REQUEST_URI $fastcgi_path_info;
         fastcgi_read_timeout 900;
         fastcgi_param DOCUMENT_ROOT /var/www/html/backend;
     }
@@ -24,7 +22,7 @@ server {
     location / {
         root /var/www/html/backend;
         try_files $uri $uri/ /bitrix/urlrewrite.php$is_args$args;
-
+        index index.php;
         location ~ .php$ {
             include fastcgi_params;
             fastcgi_pass unix:/run/php/php8.3-fpm.sock;
